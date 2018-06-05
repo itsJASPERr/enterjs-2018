@@ -1,0 +1,42 @@
+{
+  "name": "enterjs-demo",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "expo": "^27.0.2",
+    "react": "^16.4.0",
+    "react-art": "^16.4.0",
+    "react-dom": "^16.4.0",
+    "react-native": "^0.55.4",
+    "react-native-web": "^0.8.2",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-router-native": "^4.2.0",
+    "react-scripts": "1.1.4"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx-source": "^6.22.0",
+    "babel-preset-expo": "^4.0.0",
+    "flow-bin": "^0.73.0",
+    "jest-expo": "^27.0.1",
+    "react-native-scripts": "^1.14.0",
+    "react-test-renderer": "^16.4.0"
+  },
+  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "scripts": {
+    "start-web": "react-scripts start",
+    "build-web": "react-scripts build",
+    "test-web": "react-scripts test --env=jsdom",
+    "eject-web": "react-scripts eject",
+    "start-native": "react-native-scripts start",
+    "eject-native": "react-native-scripts eject",
+    "android": "react-native-scripts android",
+    "ios": "react-native-scripts ios --simulator='iPhone X'",
+    "test-native": "node node_modules/jest/bin/jest.js --watch",
+    "test": "npm run test-web && npm run test-native"
+  },
+  "jest": {
+    "preset": "jest-expo"
+  }
+}
