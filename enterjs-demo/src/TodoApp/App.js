@@ -1,8 +1,9 @@
 import { Button, TextInput } from '../components'
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Link, Route } from '../Routing'
 import React, { Component } from 'react'
 
-import { Link } from '../Routing'
+import { Modal } from '../components/Modal'
 
 const todos = [
   { key: '1', name: 'Write Platform Agnostic Code' },
@@ -17,7 +18,8 @@ export default class App extends Component {
       3: false
     },
     todos: todos,
-    add: ''
+    add: '',
+    menu: false
   }
   isDone = (key) => (this.state[key])
   toggle = (key) => {
@@ -47,31 +49,60 @@ export default class App extends Component {
     }})
   }
   render() {
+    const { height, width } = Dimensions.get('window')
+    const { menu } = this.state
+    const { withMenu } = this.props
     return (
       <View style={styles.app}>
-        <View style={styles.appHeader}>
-          <Text style={styles.appTitle}>Welcome to TodoApp ⚛️</Text>
-          <Link to='/split'><Text>komplex</Text></Link>
-        </View>
-        <View style={styles.appContent}>
-        <View style={{flex:4}}>
-          <FlatList data={this.state.todos} extraData={{
-            ...this.state.todos,
-            ...this.state.status
-          }} renderItem={({item}) => (
-            <TouchableOpacity onPress={() => this.toggle(item.key)}>
-              <View>
-                <Text style={ [this.state.status[item.key] ? styles.doneItem : '', styles.listItem] }>
-                  {item.name}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          )}/>
+        
+        {width > 320 && width < 399 && menu && withMenu &&
+          <View style={{ position: 'absolute', width: '80%', height: '100%', zIndex: 99, backgroundColor: 'white', paddingTop: 44 }}>
+            <Text>hi</Text>
+            <Button title='close' onPress={() => this.setState(prev => ({ menu: !prev.menu }))} />
           </View>
-          <View style={{flex:1}}>
-            <TextInput label='Add Todo' value={this.state.add} placeholder='+ Add Todo' onChangeText={this.onChangeAdd} style={styles.input} />
-            <Button disabled={this.state.add === ''} title='ok' onPress={this.addTodo} />
+        }
+        {width >= 399 && withMenu &&
+          <View style={{ position: 'relative', width: 200, height: '100%', zIndex: 99, backgroundColor: 'white', paddingTop: 44 }}>
+            <Text>hi</Text>
           </View>
+        }
+
+        <View style={styles.cont}>
+          <View style={styles.appHeader}>
+            <Text style={styles.appTitle}>Welcome to TodoApp ⚛️</Text>
+            {width > 320 && width < 399 && withMenu &&
+              <Button title='open menu' onPress={() => this.setState(prev => ({ menu: !prev.menu }))} />
+            }
+          </View>
+
+          <View style={styles.appContent}>
+            <View style={{flex:4}}>
+              <FlatList data={this.state.todos} extraData={{
+                ...this.state.todos,
+                ...this.state.status
+              }} renderItem={({item}) => (
+                // <Link to={item.key}>
+                  <TouchableOpacity onPress={() => this.toggle(item.key)}>
+                    <View>
+                      <Text style={ [this.state.status[item.key] ? styles.doneItem : '', styles.listItem] }>
+                        {item.name}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                // </Link>
+              )}/>
+            </View>
+            <View style={{flex:1}}>
+              <TextInput label='Add Todo' value={this.state.add} placeholder='+ Add Todo' onChangeText={this.onChangeAdd} style={styles.input} />
+              <Button disabled={this.state.add === ''} title='ok' onPress={this.addTodo} />
+            </View>
+          </View>
+
+          <Route path='/:id' render={({history}) => (
+            <Modal visible fullScreen animationType='slide' onRequestClose={() => history.goBack()}>
+              <Text>helo</Text>
+            </Modal>
+          )} />
         </View>
       </View>
     )
@@ -79,7 +110,12 @@ export default class App extends Component {
 }
 const styles = StyleSheet.create({
   app: {
-    flex: 1
+    flex: 1,
+    flexDirection: 'row'
+  },
+  cont: {
+    flex: 1,
+    flexDirection: 'column'
   },
   appHeader: {
     flex: 1,
@@ -93,7 +129,7 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   appContent: {
-    flex: 2
+    flex: 2,
   },
   doneItem: {
     textDecorationLine: 'line-through',
