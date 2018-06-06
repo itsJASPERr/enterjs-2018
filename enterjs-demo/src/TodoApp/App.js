@@ -1,4 +1,5 @@
-import { Button, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Button, TextInput } from '../components'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { Component } from 'react'
 
 import { Link } from '../Routing'
@@ -50,24 +51,27 @@ export default class App extends Component {
       <View style={styles.app}>
         <View style={styles.appHeader}>
           <Text style={styles.appTitle}>Welcome to TodoApp ⚛️</Text>
+          <Link to='/split'><Text>komplex</Text></Link>
         </View>
-        <View>
+        <View style={styles.appContent}>
+        <View style={{flex:4}}>
           <FlatList data={this.state.todos} extraData={{
             ...this.state.todos,
             ...this.state.status
           }} renderItem={({item}) => (
             <TouchableOpacity onPress={() => this.toggle(item.key)}>
               <View>
-                <Text style={ this.state.status[item.key] ? styles.doneItem : '' }>
+                <Text style={ [this.state.status[item.key] ? styles.doneItem : '', styles.listItem] }>
                   {item.name}
                 </Text>
               </View>
             </TouchableOpacity>
           )}/>
-        </View>
-        <View style={styles.appIntro}>
-          <TextInput value={this.state.add} placeholder='Add Todo' onChangeText={this.onChangeAdd} />
-          <Button disabled={this.state.add === ''} title='ok' onPress={this.addTodo} />
+          </View>
+          <View style={{flex:1}}>
+            <TextInput label='Add Todo' value={this.state.add} placeholder='+ Add Todo' onChangeText={this.onChangeAdd} style={styles.input} />
+            <Button disabled={this.state.add === ''} title='ok' onPress={this.addTodo} />
+          </View>
         </View>
       </View>
     )
@@ -88,12 +92,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white'
   },
-  appIntro: {
+  appContent: {
     flex: 2
   },
   doneItem: {
     textDecorationLine: 'line-through',
     textDecorationStyle: 'solid',
     opacity: 0.5
+  },
+  listItem: {
+    height: 44,
+    justifyContent: 'center',
+    padding: 8,
+    fontSize: 18
+  },
+  input: {
+    margin: 8,
   }
 })
