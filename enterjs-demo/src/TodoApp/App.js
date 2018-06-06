@@ -81,15 +81,16 @@ export default class App extends Component {
                 ...this.state.todos,
                 ...this.state.status
               }} renderItem={({item}) => (
-                // <Link to={item.key}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <TouchableOpacity onPress={() => this.toggle(item.key)}>
-                    <View>
-                      <Text style={ [this.state.status[item.key] ? styles.doneItem : '', styles.listItem] }>
-                        {item.name}
-                      </Text>
-                    </View>
+                    <Text style={ [this.state.status[item.key] ? styles.doneItem : '', styles.listItem] }>
+                      {item.name}
+                    </Text>
                   </TouchableOpacity>
-                // </Link>
+                  <Link to={item.key} component={TouchableOpacity}>
+                    <Text>Details</Text>
+                  </Link>
+                </View>
               )}/>
             </View>
             <View style={{flex:1}}>
@@ -100,7 +101,11 @@ export default class App extends Component {
 
           <Route path='/:id' render={({history}) => (
             <Modal visible fullScreen animationType='slide' onRequestClose={() => history.goBack()}>
-              <Text>helo</Text>
+              <View style={{ paddingTop: 44 }}>
+                <TouchableOpacity onPress={() => history.goBack()}>
+                  <Text>back</Text>
+                </TouchableOpacity>
+              </View>
             </Modal>
           )} />
         </View>

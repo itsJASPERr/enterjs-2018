@@ -1,8 +1,8 @@
 {
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 5725,
-  "expoServerNgrokUrl": "https://js-spv.itsjasperr.enterjs-demo.exp.direct",
-  "packagerNgrokUrl": "https://packager.js-spv.itsjasperr.enterjs-demo.exp.direct",
-  "ngrokPid": 97276
+  "packagerPid": 3629,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }
