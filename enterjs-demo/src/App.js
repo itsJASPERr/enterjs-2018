@@ -6,7 +6,7 @@ export default class WebApp extends React.Component {
   render () {
     return (
       <Router>
-        <App withMenu={false} />
+        <App withMenu={true} />
       </Router>
     )
   }

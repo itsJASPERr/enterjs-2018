@@ -33,7 +33,7 @@
     "start-native": "react-native-scripts start",
     "eject-native": "react-native-scripts eject",
     "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios --simulator='iPhone X'",
+    "ios": "react-native-scripts ios --simulator='iPhone 8'",
     "test-native": "node node_modules/jest/bin/jest.js --watch",
     "test": "npm run test-web && npm run test-native"
   },

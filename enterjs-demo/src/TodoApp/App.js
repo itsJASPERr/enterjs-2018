@@ -1,9 +1,11 @@
 import { Button, TextInput } from '../components'
-import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, FlatList, Button as NativeButton, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Link, Route } from '../Routing'
 import React, { Component } from 'react'
 
+import { AddTodoContent as AddTodoComposition } from '../compositions/AddTodoContent'
 import { Modal } from '../components/Modal'
+import { AddTodo as WrappedAddTodoComposition } from '../compositions/AddTodo'
 
 const todos = [
   { key: '1', name: 'Write Platform Agnostic Code' },
@@ -12,14 +14,27 @@ const todos = [
 ]
 export default class App extends Component {
   state = {
+    width: 0,
     status: {
       1: false,
       2: false,
       3: false
     },
     todos: todos,
-    add: '',
     menu: false
+  }
+  _sizeUpdate = ({ window }) => {
+    this.setState({
+      height: window.height,
+      width: window.width
+    })
+  }
+  componentWillMount = () => {
+    this._sizeUpdate({ window: Dimensions.get('window') })
+    Dimensions.addEventListener('change', this._sizeUpdate)
+  }
+  componentWillUnmount = () => {
+    Dimensions.removeEventListener('change', this._sizeUpdate) 
   }
   isDone = (key) => (this.state[key])
   toggle = (key) => {
@@ -30,10 +45,7 @@ export default class App extends Component {
       }
       }))
   }
-  onChangeAdd = (v) => {
-    this.setState({ add: v })
-  }
-  addTodo = () => {
+  addTodo = (todo) => {
     this.setState(prev => {
       const k = prev.todos.length + 1
       return {
@@ -43,34 +55,34 @@ export default class App extends Component {
       },
       todos: [
         ...prev.todos,
-        { key: k + '', name: this.state.add }
-      ],
-      add: ''
+        { key: k + '', name: todo }
+      ]
     }})
   }
   render() {
-    const { height, width } = Dimensions.get('window')
     const { menu } = this.state
     const { withMenu } = this.props
+    const { width } = this.state
     return (
       <View style={styles.app}>
-        
         {width > 320 && width < 399 && menu && withMenu &&
           <View style={{ position: 'absolute', width: '80%', height: '100%', zIndex: 99, backgroundColor: 'white', paddingTop: 44 }}>
-            <Text>hi</Text>
+            <Text>Menu</Text>
             <Button title='close' onPress={() => this.setState(prev => ({ menu: !prev.menu }))} />
           </View>
         }
         {width >= 399 && withMenu &&
-          <View style={{ position: 'relative', width: 200, height: '100%', zIndex: 99, backgroundColor: 'white', paddingTop: 44 }}>
-            <Text>hi</Text>
+          <View style={{ position: 'absolute', width: 200, height: '100%', zIndex: 99, backgroundColor: 'white', paddingTop: 44 }}>
+            <Text>Menu</Text>
           </View>
         }
 
-        <View style={styles.cont}>
+        <View style={[styles.cont, {
+          marginLeft: Platform.OS === 'web' && width >= 399 && withMenu ? 200 : 0
+        }]}>
           <View style={styles.appHeader}>
             <Text style={styles.appTitle}>Welcome to TodoApp ⚛️</Text>
-            {width > 320 && width < 399 && withMenu &&
+            {width < 399 && withMenu &&
               <Button title='open menu' onPress={() => this.setState(prev => ({ menu: !prev.menu }))} />
             }
           </View>
@@ -93,15 +105,12 @@ export default class App extends Component {
                 </View>
               )}/>
             </View>
-            <View style={{flex:1}}>
-              <TextInput label='Add Todo' value={this.state.add} placeholder='+ Add Todo' onChangeText={this.onChangeAdd} style={styles.input} />
-              <Button disabled={this.state.add === ''} title='ok' onPress={this.addTodo} />
-            </View>
+            <WrappedAddTodoComposition InputStyle={styles.addTodoInput} ButtonWrapperStyle={styles.addTodoButtonWrapper} ButtonStyle={styles.addTodoButton} style={styles.addTodo} onSubmit={this.addTodo} />
           </View>
 
           <Route path='/:id' render={({history}) => (
             <Modal visible fullScreen animationType='slide' onRequestClose={() => history.goBack()}>
-              <View style={{ paddingTop: 44 }}>
+              <View>
                 <TouchableOpacity onPress={() => history.goBack()}>
                   <Text>back</Text>
                 </TouchableOpacity>
@@ -114,9 +123,20 @@ export default class App extends Component {
   }
 }
 const styles = StyleSheet.create({
+  addTodoButtonWrapper: {
+    paddingTop: 16,
+    paddingBottom: 16
+  },
+  addTodoButton: {
+    fontSize: 24
+  },
+  addTodo: {
+    flex:1
+  },
   app: {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    height: '100%'
   },
   cont: {
     flex: 1,
